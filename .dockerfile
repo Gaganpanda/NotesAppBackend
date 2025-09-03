@@ -1,24 +1,24 @@
-# Use an official OpenJDK image
+# Use an official OpenJDK runtime as base image
 FROM openjdk:17-jdk-slim
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the Maven/Gradle build file first (for dependency caching)
+# Copy Maven files first (for dependency caching)
 COPY pom.xml .
 COPY mvnw .
 COPY .mvn .mvn
 
-# Download dependencies (this step is cached unless pom.xml changes)
+# Download dependencies
 RUN ./mvnw dependency:go-offline -B
 
 # Copy the entire project
 COPY . .
 
-# Package the application
+# Package the application (skip tests for faster build)
 RUN ./mvnw clean package -DskipTests
 
-# Expose the port Spring Boot runs on
+# Expose port 8080 (Spring Boot default)
 EXPOSE 8080
 
 # Run the application

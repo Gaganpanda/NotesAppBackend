@@ -11,21 +11,21 @@ import com.jsp.NotesApp.dto.ResponseStructure;
 @ControllerAdvice
 public class NoteAppExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler
-	public ResponseEntity<ResponseStructure<String>> INFEhandler(IdNotFoundException exception)
-	{
+	public ResponseEntity<ResponseStructure<String>> INFEhandler(IdNotFoundException exception) {
 		ResponseStructure<String> structure = new ResponseStructure<>();
-		structure.setData("User Not Found");
-		structure.setMessage(exception.getMessage());
+		structure.setData(exception.getMessage());  // Use actual exception message
+		structure.setMessage("Resource Not Found"); // Or a generic message
 		structure.setStatusCode(HttpStatus.NOT_FOUND.value());
-		return new ResponseEntity<ResponseStructure<String>>(structure, HttpStatus.NOT_FOUND);	
+		return new ResponseEntity<>(structure, HttpStatus.NOT_FOUND);
 	}
+
 	@ExceptionHandler
-	public ResponseEntity<ResponseStructure<String>> ICEhandler(InvalidCredentialsException exception)
-	{
+	public ResponseEntity<ResponseStructure<String>> INFEhandler(IdNotFoundException exception) {
 		ResponseStructure<String> structure = new ResponseStructure<>();
-		structure.setData("User Not Found");
-		structure.setMessage(exception.getMessage());
+		structure.setData(exception.getMessage());  // Use actual exception message
+		structure.setMessage("Resource Not Found"); // Or a generic message
 		structure.setStatusCode(HttpStatus.NOT_FOUND.value());
-		return new ResponseEntity<ResponseStructure<String>>(structure, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(structure, HttpStatus.NOT_FOUND);
 	}
+
 }

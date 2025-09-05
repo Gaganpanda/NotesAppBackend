@@ -1,19 +1,11 @@
 package com.jsp.NotesApp.dto;
 
 import java.util.List;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "\"user\"")  // Properly quote user
+@Table(name = "\"user\"") // quoted for reserved keyword
 @Data
 public class User {
 	@Id
@@ -32,8 +24,7 @@ public class User {
 	@Column(nullable = false)
 	private String password;
 
-	// (Optional, but recommended for bidirectional mapping)
 	@OneToMany
-	@JoinColumn(name = "user_id") // This should match the FK in the Note table
+	@JoinColumn(name = "user_id")
 	private List<Note> notes;
 }

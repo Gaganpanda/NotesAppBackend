@@ -42,11 +42,13 @@
             <version>42.6.0</version>
         </dependency>
         <!-- Lombok (optional but recommended) -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
+       <dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.30</version>
+    <scope>provided</scope>
+</dependency>
+
         <!-- Spring Boot DevTools (optional, runtime only) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

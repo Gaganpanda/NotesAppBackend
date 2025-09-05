@@ -21,49 +21,43 @@ import com.jsp.NotesApp.service.UserService;
 @RestController
 @CrossOrigin
 public class UserController {
-	
+
 	@Autowired
 	private UserService service;
-	
+
 	@PostMapping("/users")
-	public ResponseEntity<ResponseStructure<User>> saveUser(@RequestBody User u)
-	{
+	public ResponseEntity<ResponseStructure<User>> saveUser(@RequestBody User u) {
 		return service.saveUser(u);
 	}
-	
+
 	@PutMapping("/users")
-	public ResponseEntity<ResponseStructure<User>> updateUser(@RequestBody User u)
-	{
+	public ResponseEntity<ResponseStructure<User>> updateUser(@RequestBody User u) {
 		return service.updateUser(u);
 	}
-	
+
 	@GetMapping("/users/{id}")
-	public ResponseEntity<ResponseStructure<User>> findById(@PathVariable int id)
-	{
+	public ResponseEntity<ResponseStructure<User>> findById(@PathVariable int id) {
 		return service.findById(id);
 	}
-	
+
 	@DeleteMapping("/users/{id}")
-	public ResponseEntity<ResponseStructure<String>> deleteUser(@PathVariable int id)
-	{
+	public ResponseEntity<ResponseStructure<String>> deleteUser(@PathVariable int id) {
 		return service.deleteUser(id);
 	}
-	
+
 	@GetMapping("/users")
-	public ResponseEntity<ResponseStructure<List<User>>> findAll()
-	{
+	public ResponseEntity<ResponseStructure<List<User>>> findAll() {
 		return service.findAll();
 	}
-	
+
 	@PostMapping("/users/verifyByphone")
-	public ResponseEntity<ResponseStructure<User>> verifyUser(@RequestParam long phone, @RequestParam String password)
-	{
+	public ResponseEntity<ResponseStructure<User>> verifyUser(@RequestParam long phone, @RequestParam String password) {
 		return service.verifyUser(phone, password);
 	}
-	
+
 	@PostMapping("/users/verifyByEmail")
-	public ResponseEntity<ResponseStructure<User>> verifyUser(@RequestParam String email, @RequestParam String password)
-	{
+	public ResponseEntity<ResponseStructure<User>> verifyUser(@RequestParam String email,
+			@RequestParam String password) {
 		return service.verifyUser(email, password);
 	}
 }

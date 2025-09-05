@@ -21,31 +21,27 @@ import com.jsp.NotesApp.exception.InvalidCredentialsException;
 public class UserService {
 	@Autowired
 	private UserDAO dao;
-	
-	public ResponseEntity<ResponseStructure<User>> saveUser(@RequestBody User u)
-	{
+
+	public ResponseEntity<ResponseStructure<User>> saveUser(@RequestBody User u) {
 		ResponseStructure<User> structure = new ResponseStructure<>();
 		structure.setData(dao.saveUser(u));
-		structure.setMessage("User Saved with ID: "+u.getId());
+		structure.setMessage("User Saved with ID: " + u.getId());
 		structure.setStatusCode(HttpStatus.CREATED.value());
 		return new ResponseEntity<ResponseStructure<User>>(structure, HttpStatus.CREATED);
 	}
-	
-	public ResponseEntity<ResponseStructure<User>> updateUser(@RequestBody User u)
-	{
+
+	public ResponseEntity<ResponseStructure<User>> updateUser(@RequestBody User u) {
 		ResponseStructure<User> structure = new ResponseStructure<>();
 		structure.setData(dao.updateUser(u));
-		structure.setMessage("User Updated with ID: "+u.getId());
+		structure.setMessage("User Updated with ID: " + u.getId());
 		structure.setStatusCode(HttpStatus.ACCEPTED.value());
 		return new ResponseEntity<ResponseStructure<User>>(structure, HttpStatus.ACCEPTED);
 	}
-	
-	public ResponseEntity<ResponseStructure<User>> findById(@PathVariable int id)
-	{
+
+	public ResponseEntity<ResponseStructure<User>> findById(@PathVariable int id) {
 		ResponseStructure<User> structure = new ResponseStructure<>();
 		Optional<User> recUser = dao.findById(id);
-		if(recUser.isPresent())
-		{
+		if (recUser.isPresent()) {
 			structure.setData(recUser.get());
 			structure.setMessage("User Found");
 			structure.setStatusCode(HttpStatus.OK.value());
@@ -53,13 +49,11 @@ public class UserService {
 		}
 		throw new IdNotFoundException();
 	}
-	
-	public ResponseEntity<ResponseStructure<String>> deleteUser(@PathVariable int id)
-	{
+
+	public ResponseEntity<ResponseStructure<String>> deleteUser(@PathVariable int id) {
 		ResponseStructure<String> structure = new ResponseStructure<>();
 		Optional<User> recUser = dao.findById(id);
-		if(recUser.isPresent())
-		{
+		if (recUser.isPresent()) {
 			dao.deleteUser(id);
 			structure.setData("User Found");
 			structure.setMessage("User Deleted");
@@ -68,22 +62,19 @@ public class UserService {
 		}
 		throw new IdNotFoundException();
 	}
-	
-	public ResponseEntity<ResponseStructure<List<User>>> findAll()
-	{
+
+	public ResponseEntity<ResponseStructure<List<User>>> findAll() {
 		ResponseStructure<List<User>> structure = new ResponseStructure<>();
 		structure.setData(dao.findAll());
 		structure.setMessage("All Users");
 		structure.setStatusCode(HttpStatus.OK.value());
 		return new ResponseEntity<ResponseStructure<List<User>>>(structure, HttpStatus.OK);
 	}
-	
-	public ResponseEntity<ResponseStructure<User>> verifyUser(@RequestParam long phone, @RequestParam String password)
-	{
+
+	public ResponseEntity<ResponseStructure<User>> verifyUser(@RequestParam long phone, @RequestParam String password) {
 		ResponseStructure<User> structure = new ResponseStructure<>();
 		Optional<User> recUser = dao.verifyUser(phone, password);
-		if(recUser.isPresent())
-		{
+		if (recUser.isPresent()) {
 			structure.setData(recUser.get());
 			structure.setMessage("User Verified Successfully");
 			structure.setStatusCode(HttpStatus.OK.value());
@@ -91,13 +82,12 @@ public class UserService {
 		}
 		throw new InvalidCredentialsException();
 	}
-	
-	public ResponseEntity<ResponseStructure<User>> verifyUser(@RequestParam String email, @RequestParam String password)
-	{
+
+	public ResponseEntity<ResponseStructure<User>> verifyUser(@RequestParam String email,
+			@RequestParam String password) {
 		ResponseStructure<User> structure = new ResponseStructure<>();
 		Optional<User> recUser = dao.verifyUser(email, password);
-		if(recUser.isPresent())
-		{
+		if (recUser.isPresent()) {
 			structure.setData(recUser.get());
 			structure.setMessage("User Verified Successfully");
 			structure.setStatusCode(HttpStatus.OK.value());

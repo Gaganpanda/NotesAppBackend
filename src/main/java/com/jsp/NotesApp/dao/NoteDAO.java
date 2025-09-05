@@ -28,16 +28,16 @@ public class NoteDAO {
 	}
 
 	public boolean deleteNote(int id) {
-		Optional<Note> recNote = repository.findById(id);
-		if (recNote.isPresent()) {
-			repository.delete(recNote.get());
+		Optional<Note> note = repository.findById(id);
+		if (note.isPresent()) {
+			repository.delete(note.get());
 			return true;
 		}
 		return false;
 	}
 
-	public List<Note> findNotesByUserId(int user_id) {
-		return repository.findNotesByUserId(user_id);
+	public List<Note> findNotesByUserId(int userId) {
+		return repository.findNotesByUserId(userId);
 	}
 
 	public Optional<Note> findByShareUrl(String shareUrl) {

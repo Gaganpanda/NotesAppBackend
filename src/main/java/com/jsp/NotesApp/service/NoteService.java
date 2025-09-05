@@ -24,22 +24,25 @@ public class NoteService {
 	@Autowired
 	private NoteDAO noteDao;
 
-	// Save Note with shareUrl
 	public ResponseEntity<ResponseStructure<Note>> saveNote(Note note, int user_id) {
-		ResponseStructure<Note> structure = new ResponseStructure<>();
-		Optional<User> recUser = userDao.findById(user_id);
-		if (recUser.isPresent()) {
-			User u = recUser.get();
-			u.getNotes().add(note);
-			note.setUser(u);
+		// Debug log to check incoming content
+		System.out.println("Debug: Received Note content: [" + note.getContent() + "]");
 
-			// Generate unique shareUrl
+		if (note.getContent() == null || note.getContent().trim().isEmpty()) {
+			throw new IllegalArgumentException("Note content cannot be blank");
+		}
+
+		Optional<User> userOpt = userDao.findById(user_id);
+		if (userOpt.isPresent()) {
+			User user = userOpt.get();
+			note.setUser(user);
+
 			note.setShareUrl(UUID.randomUUID().toString());
 
-			userDao.updateUser(u);
-			noteDao.saveNote(note);
+			Note savedNote = noteDao.saveNote(note);
 
-			structure.setData(note);
+			ResponseStructure<Note> structure = new ResponseStructure<>();
+			structure.setData(savedNote);
 			structure.setMessage("Note Added Successfully");
 			structure.setStatusCode(HttpStatus.CREATED.value());
 			return new ResponseEntity<>(structure, HttpStatus.CREATED);
@@ -47,31 +50,34 @@ public class NoteService {
 		throw new IdNotFoundException();
 	}
 
-	// Update note (keep shareUrl)
 	public ResponseEntity<ResponseStructure<Note>> updateNote(Note note, int user_id) {
-		ResponseStructure<Note> structure = new ResponseStructure<>();
-		Optional<User> recUser = userDao.findById(user_id);
-		if (recUser.isPresent()) {
-			// Keep the existing shareUrl if present
-			if (note.getShareUrl() == null || note.getShareUrl().isEmpty()) {
+		if (note.getContent() == null || note.getContent().trim().isEmpty()) {
+			throw new IllegalArgumentException("Note content cannot be blank");
+		}
+
+		Optional<User> userOpt = userDao.findById(user_id);
+		if (userOpt.isPresent()) {
+			if (note.getShareUrl() == null || note.getShareUrl().trim().isEmpty()) {
 				note.setShareUrl(UUID.randomUUID().toString());
 			}
-			note.setUser(recUser.get());
-			noteDao.updateNote(note);
-			structure.setData(note);
+			note.setUser(userOpt.get());
+			Note updatedNote = noteDao.updateNote(note);
+
+			ResponseStructure<Note> structure = new ResponseStructure<>();
+			structure.setData(updatedNote);
 			structure.setMessage("Note Updated Successfully");
 			structure.setStatusCode(HttpStatus.ACCEPTED.value());
 			return new ResponseEntity<>(structure, HttpStatus.ACCEPTED);
 		}
+
 		throw new IdNotFoundException();
 	}
 
-	// Find by shareUrl
 	public ResponseEntity<ResponseStructure<Note>> findByShareUrl(String shareUrl) {
-		ResponseStructure<Note> structure = new ResponseStructure<>();
-		Optional<Note> recNote = noteDao.findByShareUrl(shareUrl);
-		if (recNote.isPresent()) {
-			structure.setData(recNote.get());
+		Optional<Note> noteOpt = noteDao.findByShareUrl(shareUrl);
+		if (noteOpt.isPresent()) {
+			ResponseStructure<Note> structure = new ResponseStructure<>();
+			structure.setData(noteOpt.get());
 			structure.setMessage("Note Found via Share URL");
 			structure.setStatusCode(HttpStatus.OK.value());
 			return new ResponseEntity<>(structure, HttpStatus.OK);
@@ -80,10 +86,10 @@ public class NoteService {
 	}
 
 	public ResponseEntity<ResponseStructure<Note>> findById(int id) {
-		ResponseStructure<Note> structure = new ResponseStructure<>();
-		Optional<Note> recNote = noteDao.findById(id);
-		if (recNote.isPresent()) {
-			structure.setData(recNote.get());
+		Optional<Note> noteOpt = noteDao.findById(id);
+		if (noteOpt.isPresent()) {
+			ResponseStructure<Note> structure = new ResponseStructure<>();
+			structure.setData(noteOpt.get());
 			structure.setMessage("Note Found");
 			structure.setStatusCode(HttpStatus.OK.value());
 			return new ResponseEntity<>(structure, HttpStatus.OK);
@@ -92,21 +98,21 @@ public class NoteService {
 	}
 
 	public ResponseEntity<ResponseStructure<String>> deleteNote(int id) {
-		ResponseStructure<String> structure = new ResponseStructure<>();
-		Optional<Note> recNote = noteDao.findById(id);
-		if (recNote.isPresent()) {
-			noteDao.deleteNote(id);
+		boolean deleted = noteDao.deleteNote(id);
+		if (deleted) {
+			ResponseStructure<String> structure = new ResponseStructure<>();
 			structure.setData("Note Deleted");
-			structure.setMessage("Note Found");
+			structure.setMessage("Note Deleted Successfully");
 			structure.setStatusCode(HttpStatus.OK.value());
 			return new ResponseEntity<>(structure, HttpStatus.OK);
 		}
 		throw new IdNotFoundException();
 	}
 
-	public ResponseEntity<ResponseStructure<List<Note>>> findNotesByUserId(int id) {
+	public ResponseEntity<ResponseStructure<List<Note>>> findNotesByUserId(int user_id) {
+		List<Note> notes = noteDao.findNotesByUserId(user_id);
 		ResponseStructure<List<Note>> structure = new ResponseStructure<>();
-		structure.setData(noteDao.findNotesByUserId(id));
+		structure.setData(notes);
 		structure.setMessage("Notes found for User ID");
 		structure.setStatusCode(HttpStatus.OK.value());
 		return new ResponseEntity<>(structure, HttpStatus.OK);
